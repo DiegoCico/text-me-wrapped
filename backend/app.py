@@ -8,6 +8,10 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
+@app.route('/life', methods=['GET'])
+def check_life():
+    return jsonify(success=True, message="Server is up and running!")
+
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
