@@ -11,6 +11,7 @@ frontend/node_modules
 # production
 /build
 
+.venv
 backend/.venv
 backend/secrets.config
 backend/secrets
