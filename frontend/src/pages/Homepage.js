@@ -13,7 +13,7 @@ function Homepage() {
         const formData = new FormData();
         formData.append("file", file);
 
-        setIsLoading(true); // Show loading popup
+        setIsLoading(true);
 
         fetch("http://127.0.0.1:5000/api/upload", {
           method: "POST",
@@ -21,9 +21,8 @@ function Homepage() {
         })
           .then((response) => response.json())
           .then((data) => {
-            setIsLoading(false); // Hide loading popup
+            setIsLoading(false);
             if (data.success) {
-              console.log("Insights:", data.insights); // Log the results to the console
               setFileContent(data.insights);
               setUploadError(null);
             } else {
@@ -34,7 +33,7 @@ function Homepage() {
           .catch((error) => {
             console.error("Error uploading file:", error);
             setUploadError("An error occurred while uploading the file.");
-            setIsLoading(false); // Hide loading popup
+            setIsLoading(false);
           });
       } else {
         setUploadError("Please upload a valid .txt file.");
@@ -49,6 +48,8 @@ function Homepage() {
       <div className="circle"></div>
       <div className="circle"></div>
       <div className="circle"></div>
+      <div className="circle"></div> {/* New Circle */}
+      <div className="circle"></div> {/* New Circle */}
       <h1>Welcome to Text Me Wrapped</h1>
       <p>Analyze your messages and see insights in no time!</p>
       <div className="file-upload-container">
@@ -72,9 +73,48 @@ function Homepage() {
         </div>
       )}
       {fileContent && (
-        <div className="file-content">
-          <h2>File Insights:</h2>
-          <pre>{JSON.stringify(fileContent, null, 2)}</pre>
+        <div className="insights">
+          <h2>Chat Insights</h2>
+          <div className="insight-card">
+            <h3>Participants</h3>
+            <p>{fileContent.participants.join(", ")}</p>
+          </div>
+          <div className="insight-card">
+            <h3>Total Messages</h3>
+            <p>{fileContent.total_messages}</p>
+          </div>
+          <div className="insight-card">
+            <h3>Mood Percentages</h3>
+            <ul>
+              {Object.entries(fileContent.mood_percentages).map(([mood, percentage]) => (
+                <li key={mood}>
+                  {mood.charAt(0).toUpperCase() + mood.slice(1)}: {percentage}%
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="insight-card">
+            <h3>Most Used Words</h3>
+            {Object.entries(fileContent.most_used_words).map(([participant, data]) => (
+              <p key={participant}>
+                {participant}: {data.word} ({data.count} times)
+              </p>
+            ))}
+          </div>
+          <div className="insight-card">
+            <h3>Participation Percentages</h3>
+            {Object.entries(fileContent.participation_percentages).map(([participant, percentage]) => (
+              <p key={participant}>
+                {participant}: {percentage}%
+              </p>
+            ))}
+          </div>
+          <div className="insight-card">
+            <h3>Reply Times</h3>
+            <p>Average: {fileContent.reply_times.average}</p>
+            <p>Quickest: {fileContent.reply_times.quickest}</p>
+            <p>Slowest: {fileContent.reply_times.slowest}</p>
+          </div>
         </div>
       )}
       {uploadError && <p className="error-message">{uploadError}</p>}
