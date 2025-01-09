@@ -13,6 +13,7 @@ frontend/node_modules
 
 backend/.venv
 backend/secrets.config
+backend/secrets
 
 # misc
 .DS_Store
