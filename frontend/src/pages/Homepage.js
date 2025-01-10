@@ -43,13 +43,13 @@ function Homepage() {
 
   return (
     <div className="homepage">
+      {/* <div className="circle"></div>
       <div className="circle"></div>
       <div className="circle"></div>
       <div className="circle"></div>
       <div className="circle"></div>
-      <div className="circle"></div>
-      <div className="circle"></div> {/* New Circle */}
-      <div className="circle"></div> {/* New Circle */}
+      <div className="circle"></div> 
+      <div className="circle"></div>  */}
       <h1>Welcome to Text Me Wrapped</h1>
       <p>Analyze your messages and see insights in no time!</p>
       <div className="file-upload-container">
