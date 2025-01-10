@@ -9,7 +9,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Route for the homepage */}
-          <Route path="/" element={<Homepage />} />
+          <Route path="/text-to-wrapped" element={<Homepage />} />
 
           {/* Route for checking server status */}
           <Route path="/life" element={<Life />} />
