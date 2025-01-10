@@ -2,7 +2,7 @@
   "name": "text-me-wrapped",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://diegocico.github.io/text-to-wrapped",
+  "homepage": "https://diegocico.github.io/text-me-wrapped/",
   "dependencies": {
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
