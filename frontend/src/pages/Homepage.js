@@ -43,81 +43,155 @@ function Homepage() {
 
   return (
     <div className="homepage">
-      {/* <div className="circle"></div>
-      <div className="circle"></div>
-      <div className="circle"></div>
-      <div className="circle"></div>
-      <div className="circle"></div>
-      <div className="circle"></div> 
-      <div className="circle"></div>  */}
-      <h1>Welcome to Text Me Wrapped</h1>
-      <p>Analyze your messages and see insights in no time!</p>
-      <div className="file-upload-container">
-        <input
-          type="file"
-          accept=".txt"
-          id="fileUpload"
-          className="file-upload"
-          onChange={handleFileUpload}
-        />
-        <label htmlFor="fileUpload" className="file-upload-label">
-          Upload Your .txt File
-        </label>
+      <header className="homepage-header">
+        <h1 className="title">
+          <span className="highlight">Text Me Wrapped</span>
+        </h1>
+        <p className="tagline">Discover the story behind your chats in style!</p>
+      </header>
+
+      <div className="upload-section">
+        <div className="file-upload-container">
+          <input
+            type="file"
+            accept=".txt"
+            id="fileUpload"
+            className="file-upload"
+            onChange={handleFileUpload}
+          />
+          <label htmlFor="fileUpload" className="file-upload-label">
+            Upload Your Chat File
+          </label>
+        </div>
+        {uploadError && <p className="error-message">{uploadError}</p>}
       </div>
+
       {isLoading && (
-        <div className="loading-popup">
-          <div className="loading-bar">
-            <div className="progress"></div>
+        <div className="popup">
+          <div className="popup-content">
+            <div className="loading-spinner"></div>
+            <p>Analyzing your chat... Hang tight!</p>
           </div>
-          <p>Processing your file, please wait...</p>
         </div>
       )}
+
       {fileContent && (
-        <div className="insights">
-          <h2>Chat Insights</h2>
-          <div className="insight-card">
-            <h3>Participants</h3>
-            <p>{fileContent.participants.join(", ")}</p>
-          </div>
-          <div className="insight-card">
-            <h3>Total Messages</h3>
-            <p>{fileContent.total_messages}</p>
-          </div>
-          <div className="insight-card">
-            <h3>Mood Percentages</h3>
-            <ul>
-              {Object.entries(fileContent.mood_percentages).map(([mood, percentage]) => (
-                <li key={mood}>
-                  {mood.charAt(0).toUpperCase() + mood.slice(1)}: {percentage}%
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="insight-card">
-            <h3>Most Used Words</h3>
-            {Object.entries(fileContent.most_used_words).map(([participant, data]) => (
-              <p key={participant}>
-                {participant}: {data.word} ({data.count} times)
-              </p>
-            ))}
-          </div>
-          <div className="insight-card">
-            <h3>Participation Percentages</h3>
-            {Object.entries(fileContent.participation_percentages).map(([participant, percentage]) => (
-              <p key={participant}>
-                {participant}: {percentage}%
-              </p>
-            ))}
-          </div>
-          <div className="insight-card">
-            <h3>Reply Times</h3>
-            <p>Average: {fileContent.reply_times.average}</p>
-            <p>Quickest: {fileContent.reply_times.quickest}</p>
-            <p>Slowest: {fileContent.reply_times.slowest}</p>
+        <div className="results">
+          <h2>Your Chat Insights</h2>
+          <div className="results-grid">
+            {fileContent.participants && (
+              <div className="card colorful-card">
+                <h3>Participants</h3>
+                <p>{fileContent.participants.join(", ")}</p>
+              </div>
+            )}
+            {fileContent.total_messages !== undefined && (
+              <div className="card colorful-card">
+                <h3>Total Messages</h3>
+                <p>{fileContent.total_messages}</p>
+              </div>
+            )}
+            {fileContent.mood_percentages && (
+              <div className="card colorful-card">
+                <h3>Mood Breakdown</h3>
+                <ul>
+                  {Object.entries(fileContent.mood_percentages).map(
+                    ([mood, percentage]) => (
+                      <li key={mood}>
+                        {mood.charAt(0).toUpperCase() + mood.slice(1)}:{" "}
+                        <strong>{percentage}%</strong>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+            {fileContent.most_used_words && (
+              <div className="card colorful-card">
+                <h3>Most Used Words</h3>
+                {Object.entries(fileContent.most_used_words).map(
+                  ([participant, data]) => (
+                    <p key={participant}>
+                      {participant}: "{data.word}" ({data.count} times)
+                    </p>
+                  )
+                )}
+              </div>
+            )}
+            {fileContent.participation_percentages && (
+              <div className="card colorful-card">
+                <h3>Participation Percentages</h3>
+                {Object.entries(fileContent.participation_percentages).map(
+                  ([participant, percentage]) => (
+                    <p key={participant}>
+                      {participant}: <strong>{percentage}%</strong>
+                    </p>
+                  )
+                )}
+              </div>
+            )}
+            {fileContent.profanity_counts && (
+              <div className="card colorful-card">
+                <h3>Profanity Count</h3>
+                {Object.entries(fileContent.profanity_counts).map(
+                  ([participant, count]) => (
+                    <p key={participant}>
+                      {participant}: <strong>{count} instances</strong>
+                    </p>
+                  )
+                )}
+              </div>
+            )}
+            {fileContent.emoji_usage && (
+              <div className="card colorful-card">
+                <h3>Emoji Usage</h3>
+                {Object.entries(fileContent.emoji_usage).map(
+                  ([participant, data]) => (
+                    <p key={participant}>
+                      {participant}: Most used emoji:{" "}
+                      <strong>{data.most_used}</strong> (
+                      {data.count} times, Total: {data.total})
+                    </p>
+                  )
+                )}
+              </div>
+            )}
+            {fileContent.hourly_activity && (
+              <div className="card colorful-card">
+                <h3>Hourly Activity</h3>
+                {Object.entries(fileContent.hourly_activity).map(
+                  ([participant, hours]) => (
+                    <p key={participant}>
+                      {participant}:{" "}
+                      {Object.entries(hours).map(([hour, count]) => (
+                        <span key={hour}>
+                          {hour}:00 - {count} messages{" "}
+                        </span>
+                      ))}
+                    </p>
+                  )
+                )}
+              </div>
+            )}
+            {fileContent.avg_message_length && (
+              <div className="card colorful-card">
+                <h3>Average Message Length</h3>
+                {Object.entries(fileContent.avg_message_length).map(
+                  ([participant, avgLength]) => (
+                    <p key={participant}>
+                      {participant}: <strong>{avgLength} characters</strong>
+                    </p>
+                  )
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
-      {uploadError && <p className="error-message">{uploadError}</p>}
+
+      <footer className="homepage-footer">
+        <p>&copy; 2025 Text Me Wrapped. Designed to bring your chats to life.</p>
+      </footer>
     </div>
   );
 }

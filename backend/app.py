@@ -6,7 +6,9 @@ import re
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}})
+
+# CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/life', methods=['GET'])
 def check_life():
@@ -28,13 +30,33 @@ def upload_file():
 
     return jsonify(success=False, message="Invalid file type. Please upload a .txt file"), 400
 
+from better_profanity import profanity
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk import download
+
+# Download necessary resources
+download('vader_lexicon')
+sia = SentimentIntensityAnalyzer()
+
 def analyze_chat(content):
     lines = content.split('\n')
     participants = set()
     messages = []
     word_counts = Counter()
-    sentiment_scores = {"positive": 0, "negative": 0, "neutral": 0}
+    emotion_scores = {
+        "excited": 0,
+        "happy": 0,
+        "calm": 0,
+        "neutral": 0,
+        "frustrated": 0,
+        "sad": 0,
+        "angry": 0
+    }
+    profanity_counts = Counter()
     emoji_usage = Counter()
+    message_lengths = Counter()
+    hourly_activity = Counter()
+    unique_words = Counter()
 
     for line in lines:
         match = re.match(r'\[(.*?)\] (.*?): (.*)', line)
@@ -43,26 +65,47 @@ def analyze_chat(content):
             participants.add(name.strip())
             messages.append((timestamp, name.strip(), message.strip()))
 
-            # Sentiment Analysis
-            sentiment = TextBlob(message).sentiment.polarity
-            if sentiment > 0.1:
-                sentiment_scores["positive"] += 1
-            elif sentiment < -0.1:
-                sentiment_scores["negative"] += 1
+            # Analyze sentiment
+            sentiment = sia.polarity_scores(message)
+            compound = sentiment['compound']
+            if compound >= 0.5:
+                emotion_scores["excited"] += 1
+            elif 0.2 <= compound < 0.5:
+                emotion_scores["happy"] += 1
+            elif 0.1 <= compound < 0.2:
+                emotion_scores["calm"] += 1
+            elif -0.1 < compound < 0.1:
+                emotion_scores["neutral"] += 1
+            elif -0.2 <= compound <= -0.1:
+                emotion_scores["frustrated"] += 1
+            elif -0.5 < compound < -0.2:
+                emotion_scores["sad"] += 1
             else:
-                sentiment_scores["neutral"] += 1
+                emotion_scores["angry"] += 1
 
-            # Count words
+            # Count profanity
+            if profanity.contains_profanity(message):
+                profanity_counts[name.strip()] += 1
+
+            # Count words and unique words
             words = re.findall(r'\b\w+\b', message.lower())
             word_counts.update({(name.strip(), word): count for word, count in Counter(words).items()})
+            unique_words[name.strip()] += len(set(words))
 
             # Count emojis
             emojis = re.findall(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F77F]', message)
             emoji_usage.update({(name.strip(), emoji): 1 for emoji in emojis})
 
+            # Message length
+            message_lengths[name.strip()] += len(message)
+
+            # Hourly activity
+            message_time = datetime.strptime(timestamp, '%m/%d/%y, %I:%M:%S %p')
+            hourly_activity[(name.strip(), message_time.hour)] += 1
+
     # Calculate mood percentages
     total_messages = len(messages)
-    mood_percentages = {mood: round(count / total_messages * 100, 2) for mood, count in sentiment_scores.items()}
+    mood_percentages = {emotion: round(count / total_messages * 100, 2) for emotion, count in emotion_scores.items()}
 
     # Most used word for each person
     most_used_words = {}
@@ -85,7 +128,29 @@ def analyze_chat(content):
     emoji_stats = {}
     for participant in participants:
         participant_emojis = {emoji: count for (name, emoji), count in emoji_usage.items() if name == participant}
-        emoji_stats[participant] = participant_emojis
+        if participant_emojis:
+            most_frequent_emoji = max(participant_emojis, key=participant_emojis.get)
+            emoji_stats[participant] = {
+                "most_used": most_frequent_emoji,
+                "count": participant_emojis[most_frequent_emoji],
+                "total": sum(participant_emojis.values())
+            }
+
+    # Activity by hour
+    hourly_stats = {
+        participant: {
+            hour: count
+            for (name, hour), count in hourly_activity.items()
+            if name == participant
+        }
+        for participant in participants
+    }
+
+    # Average message length
+    avg_message_length = {
+        participant: round(message_lengths[participant] / participant_message_count[participant], 2)
+        for participant in participants
+    }
 
     # Fun Stats
     activity_streaks = calculate_activity_streaks(messages)
@@ -98,8 +163,13 @@ def analyze_chat(content):
         "participation_percentages": participation_percentages,
         "reply_times": reply_times,
         "emoji_usage": emoji_stats,
+        "hourly_activity": hourly_stats,
+        "avg_message_length": avg_message_length,
+        "unique_word_count": unique_words,
+        "profanity_counts": profanity_counts,
         "activity_streaks": activity_streaks
     }
+
 
 def calculate_reply_times(messages):
     reply_times = []
