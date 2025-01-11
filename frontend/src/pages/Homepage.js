@@ -15,7 +15,7 @@ function Homepage() {
 
         setIsLoading(true);
 
-        fetch("http://54.152.26.115/api/upload", {
+        fetch("https://54.152.26.115/api/upload", {
           method: "POST",
           body: formData,
         })
