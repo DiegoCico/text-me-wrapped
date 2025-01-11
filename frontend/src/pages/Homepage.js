@@ -14,8 +14,8 @@ function Homepage() {
         formData.append("file", file);
 
         setIsLoading(true);
-
-        fetch("https://54.152.26.115/api/upload", {
+33
+        fetch("http://54.152.26.115/api/upload", {
           method: "POST",
           body: formData,
         })
