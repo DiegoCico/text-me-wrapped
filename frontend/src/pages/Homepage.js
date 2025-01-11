@@ -190,7 +190,7 @@ function Homepage() {
       )}
 
       <footer className="homepage-footer">
-        <p>&copy; 2025 Text Me Wrapped. Designed to bring your chats to life.</p>
+        <p>&copy; 2025 Text Me Wrapped. Designed to bring your chats to a wrapped.</p>
       </footer>
     </div>
   );

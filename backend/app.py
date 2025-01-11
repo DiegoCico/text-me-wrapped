@@ -6,9 +6,8 @@ import re
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}})
-
-# CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}})
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/life', methods=['GET'])
 def check_life():
