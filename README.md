@@ -79,32 +79,6 @@ The chat logs should follow this format:
 [01/15/23, 10:15:00 AM] John Doe: Hello!
 [01/15/23, 10:16:00 AM] Jane Smith: Hi there! 😊
 
-## Project Structure
-
-text-me-wrapped/
-├── backend/
-│   ├── app.py            # Main Flask API implementation
-│   ├── requirements.txt  # Dependencies for the backend
-│   └── utils/            # Utility functions for chat analysis
-│       ├── sentiment.py  # Sentiment analysis utilities
-│       ├── emoji.py      # Emoji detection utilities
-│       ├── stats.py      # Statistical calculations (e.g., reply times)
-│       └── formatting.py # Chat log parsing and validation
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── Homepage.js        # Main React component for file uploads and insights
-│   │   └── css/
-│   │       └── Homepage.css       # Styling for the frontend
-│   ├── public/                    # Static assets for the frontend
-│   └── package.json               # Frontend dependencies
-
-
-
-This structure highlights the separation of concerns, with the backend focused on data processing and the frontend on user experience.
-
----
-
 ## Insights Displayed
 
 ### Participants:
