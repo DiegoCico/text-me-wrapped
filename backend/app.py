@@ -3,6 +3,9 @@ from flask_cors import CORS
 from textblob import TextBlob
 from collections import Counter
 import re
+from better_profanity import profanity
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk import download
 from datetime import datetime
 
 app = Flask(__name__)
@@ -28,10 +31,6 @@ def upload_file():
         return jsonify(success=True, insights=insights)
 
     return jsonify(success=False, message="Invalid file type. Please upload a .txt file"), 400
-
-from better_profanity import profanity
-from nltk.sentiment import SentimentIntensityAnalyzer
-from nltk import download
 
 # Download necessary resources
 download('vader_lexicon')
