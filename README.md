@@ -4,7 +4,7 @@
 
 Text Me Wrapped is a React-based frontend application connected to a Flask backend hosted on AWS EC2. It provides users with deep insights into their chat logs, such as sentiment analysis, emoji usage, participation percentages, and more. This project turns your chat data into an engaging, interactive, and visually appealing summary.
 
-DUE TO COST WISE THE BACK END COULD NOT STAY RUNNING :(
+DUE TO COST THE BACK END COULD NOT STAY RUNNING :(
 
 ---
 
