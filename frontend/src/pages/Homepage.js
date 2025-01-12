@@ -16,7 +16,7 @@ function Homepage() {
         setIsLoading(true);
 
         // fetch("https://54.152.26.115/api/upload", 
-        fetch("http://127.0.0.1:5000",
+        fetch("http://127.0.0.1:5000/api/upload",
           {
           method: "POST",
           body: formData,
