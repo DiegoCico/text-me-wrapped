@@ -82,17 +82,29 @@ The chat logs should follow this format:
 ## Porject Structure 
 
 text-me-wrapped/
+
 ├── backend/
+
 │   ├── app.py        # Flask API
+
 │   ├── requirements.txt
+
 │   └── utils/        # Utility functions for chat analysis
+
 ├── frontend/
+
 │   ├── src/
+
 │   │   ├── components/
+
 │   │   │   └── Homepage.js 
+
 │   │   └── css/
+
 │   │       └── Homepage.css 
+
 │   ├── public/
+
 │   └── package.json
 
 
